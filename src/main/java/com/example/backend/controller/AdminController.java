@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.CreateUserDto;
+import com.example.backend.dto.UserResponseDto;
 import com.example.backend.entities.User;
 import com.example.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ public class AdminController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<User>> showUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserResponseDto>> showUsers() {
+        List<UserResponseDto> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

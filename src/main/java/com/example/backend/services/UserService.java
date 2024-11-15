@@ -3,6 +3,7 @@ package com.example.backend.services;
 import com.example.backend.dto.CreateUserDto;
 import com.example.backend.dto.LoginUserDto;
 import com.example.backend.dto.RecoveryJwtTokenDto;
+import com.example.backend.dto.UserResponseDto;
 import com.example.backend.entities.Role;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
@@ -60,8 +61,11 @@ public class UserService {
         return new RecoveryJwtTokenDto(jwtTokenService.generateToken(userDetails));
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserResponseDto::fromEntity)
+                .toList();
     }
 
     public User getLoggedUser(@RequestHeader("Authorization") String authorizationHeader) {

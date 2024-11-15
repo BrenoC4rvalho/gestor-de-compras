@@ -1,6 +1,7 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.CreateRequestDto;
+import com.example.backend.dto.RequestResponseDto;
 import com.example.backend.dto.SignatureRequestDto;
 import com.example.backend.entities.Request;
 import com.example.backend.entities.User;
@@ -18,7 +19,7 @@ public class RequestService {
     @Autowired
     private RequestRepository requestRepository;
 
-    public Request create(CreateRequestDto createRequestDto, User requester) {
+    public RequestResponseDto create(CreateRequestDto createRequestDto, User requester) {
         Request newRequest = Request.builder()
                 .title(createRequestDto.title())
                 .description(createRequestDto.description())
@@ -27,22 +28,27 @@ public class RequestService {
                 .requester(requester)
                 .build();
         requestRepository.save(newRequest);
-        return newRequest;
+
+        return RequestResponseDto.fromEntity(newRequest);
     }
 
-    public Optional<Request> findById(Long id) {
-        return requestRepository.findById(id);
+    public Optional<RequestResponseDto> findById(Long id) {
+        return requestRepository.findById(id)
+                .map(RequestResponseDto::fromEntity);
     }
 
     public void delete(Long id) {
         requestRepository.deleteById(id);
     }
 
-    public List<Request> findAll() {
-        return requestRepository.findAll();
+    public List<RequestResponseDto> findAll() {
+        return requestRepository.findAll()
+                .stream()
+                .map(RequestResponseDto::fromEntity)
+                .toList();
     }
 
-    public Request update(Long id, CreateRequestDto createRequestDto) {
+    public RequestResponseDto update(Long id, CreateRequestDto createRequestDto) {
         Optional<Request> existingRequest = requestRepository.findById(id);
 
         Request request = existingRequest.get();
@@ -54,20 +60,23 @@ public class RequestService {
 
         requestRepository.save(request);
 
-        return request;
+        return RequestResponseDto.fromEntity(request);
     }
 
-    public Optional<Request> signature(Long id, User approver, SignatureRequestDto signatureRequestDto) {
+    public Optional<RequestResponseDto> signature(Long id, User approver, SignatureRequestDto signatureRequestDto) {
         Optional<Request> existingRequest = requestRepository.findById(id);
 
         if(existingRequest.isEmpty()) {
             return Optional.empty();
         }
+
         Request request = existingRequest.get();
         request.setSignature(signatureRequestDto.signature());
         request.setApprover(approver);
         request.setSignatureDate(new Date());
+
         requestRepository.save(request);
-        return Optional.of(request);
+
+        return Optional.of(RequestResponseDto.fromEntity(request));
     }
 }

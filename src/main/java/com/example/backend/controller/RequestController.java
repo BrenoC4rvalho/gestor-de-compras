@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.CreateRequestDto;
+import com.example.backend.dto.RequestResponseDto;
 import com.example.backend.dto.SignatureRequestDto;
 import com.example.backend.entities.Request;
 import com.example.backend.entities.User;
@@ -25,8 +26,8 @@ public class RequestController {
     private RequestService requestService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Request>> showRequest(@PathVariable Long id) {
-        Optional<Request> request = requestService.findById(id);
+    public ResponseEntity<Optional<RequestResponseDto>> showRequest(@PathVariable Long id) {
+        Optional<RequestResponseDto> request = requestService.findById(id);
 
         if (request.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -36,54 +37,49 @@ public class RequestController {
     }
 
     @PostMapping
-    public ResponseEntity<Request> createRequest(@RequestHeader("Authorization") String authorizationHeader, @RequestBody CreateRequestDto createRequestDto) {
+    public ResponseEntity<RequestResponseDto> createRequest(@RequestHeader("Authorization") String authorizationHeader, @RequestBody CreateRequestDto createRequestDto) {
         User requester = userService.getLoggedUser(authorizationHeader);
 
-        if(userService.findByName(requester.getName()).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
-        Request newRequest = requestService.create(createRequestDto, requester);
+        RequestResponseDto newRequest = requestService.create(createRequestDto, requester);
         return new ResponseEntity<>(newRequest, HttpStatus.CREATED);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Request> editRequest(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long id, @RequestBody CreateRequestDto createRequestDto) {
+    public ResponseEntity<RequestResponseDto> editRequest(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long id,
+            @RequestBody CreateRequestDto createRequestDto
+    ) {
         User loggedUser = userService.getLoggedUser(authorizationHeader);
-        System.out.println();
-        Optional<Request> request = requestService.findById(id);
+        Optional<RequestResponseDto> request = requestService.findById(id);
 
         if (request.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Request existingRequest = request.get();
-
-        if(existingRequest.getSignature() != null && !loggedUser.getRoles().contains("ROLE_ADMIN")) {
+        if(request.get().signature() != null && !loggedUser.getRoles().contains("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        if(!existingRequest.getRequester().equals(loggedUser) && !loggedUser.getRoles().contains("ROLE_ADMIN")) {
+        if(!request.get().requesterName().equals(loggedUser.getName()) && !loggedUser.getRoles().contains("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        Request editRequest = requestService.update(id, createRequestDto);
+        RequestResponseDto editRequest = requestService.update(id, createRequestDto);
         return new ResponseEntity<>(editRequest, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRequest(@PathVariable Long id, @RequestHeader("Authorization") String authorizationHeader) {
         User loggedUser = userService.getLoggedUser(authorizationHeader);
-        Optional<Request> request = requestService.findById(id);
+        Optional<RequestResponseDto> request = requestService.findById(id);
 
         if (request.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Request existingRequest = request.get();
-
-        if (existingRequest.getSignature() != null && !loggedUser.getRoles().contains("ROLE_ADMIN")) {
+        if (request.get().signature() != null && !loggedUser.getRoles().contains("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -92,31 +88,30 @@ public class RequestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Request>> showAllRequests() {
-        List<Request> requests = requestService.findAll();
+    public ResponseEntity<List<RequestResponseDto>> showAllRequests() {
+        List<RequestResponseDto> requests = requestService.findAll();
 
         if(requests.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
     @PatchMapping("/approver/{id}")
-    public ResponseEntity<?> approverRequest(@PathVariable Long id, @RequestHeader("Authorization") String authorizationHeader, @RequestBody SignatureRequestDto signatureRequestDto) {
+    public ResponseEntity<Optional<RequestResponseDto>> approverRequest(@PathVariable Long id, @RequestHeader("Authorization") String authorizationHeader, @RequestBody SignatureRequestDto signatureRequestDto) {
         User loggedUser = userService.getLoggedUser(authorizationHeader);
-        Optional<Request> optionalRequest = requestService.findById(id);
+        Optional<RequestResponseDto> request = requestService.findById(id);
 
-        if(optionalRequest.isEmpty()) {
+        if(request.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Request request = optionalRequest.get();
-
-        if(request.getRequester().getId().equals(loggedUser.getId())) {
+        if(request.get().requesterName().equals(loggedUser.getName())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        Optional<Request> requestEdit = requestService.signature(id, loggedUser, signatureRequestDto);
+        Optional<RequestResponseDto> requestEdit = requestService.signature(id, loggedUser, signatureRequestDto);
         return new ResponseEntity<>(requestEdit, HttpStatus.OK);
 
     }
