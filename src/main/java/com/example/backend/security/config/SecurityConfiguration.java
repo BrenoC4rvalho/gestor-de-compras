@@ -30,12 +30,14 @@ public class SecurityConfiguration {
     private UserAuthenticationFilter userAuthenticationFilter;
 
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-            "/signin"
+            "/signin",
+
     };
 
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
             "/request",
-            "/request/{id}"
+            "/request/{id}",
+            "/recoveryUser"
     };
 
     public static final String[] ENDPOINTS_ADMIN = {
