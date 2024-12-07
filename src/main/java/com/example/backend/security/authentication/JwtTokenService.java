@@ -26,7 +26,6 @@ public class JwtTokenService {
 
     public String generateToken(UserDetailsImpl user) {
         try {
-            System.out.println(SECRET_KEY);
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.create()
                     .withIssuer(ISSUER)

@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin("/*")
 public class UserController {
 
     @Autowired
@@ -20,15 +20,12 @@ public class UserController {
 
     @PostMapping("/signin")
     public ResponseEntity<RecoveryJwtTokenDto> login(@RequestBody LoginUserDto loginUserDto) {
-        System.out.println("entre aqui");
-        System.out.println(loginUserDto);
         RecoveryJwtTokenDto token = userService.authenticateUser(loginUserDto);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @GetMapping("/recoveryUser")
     public ResponseEntity<UserResponseDto> getUser(@RequestHeader("Authorization") String authorizationHeader) {
-        System.out.println(authorizationHeader);
         User user = userService.getLoggedUser(authorizationHeader);
         return new ResponseEntity<>(UserResponseDto.fromEntity(user) , HttpStatus.OK);
     }
