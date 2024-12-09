@@ -34,7 +34,6 @@ public class SecurityConfiguration {
 
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/signin",
-
     };
 
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
@@ -45,12 +44,12 @@ public class SecurityConfiguration {
 
     public static final String[] ENDPOINTS_ADMIN = {
             "/admin/user",
-            "request/approver/{id}"
+            "/request/approver/{id}"
 
     };
 
     public static final String[] ENDPOINTS_APPROVER = {
-            "request/approver/{id}"
+            "/request/approver/{id}"
     };
 
     public static final String[] ENDPOINTS_REQUESTER = {
@@ -65,8 +64,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
                         .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
-                        .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMIN")
                         .requestMatchers(ENDPOINTS_APPROVER).hasRole("APPROVER")
+                        .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMIN")
                         .requestMatchers(ENDPOINTS_REQUESTER).hasRole("REQUESTER")
                         .anyRequest().denyAll()
                 )

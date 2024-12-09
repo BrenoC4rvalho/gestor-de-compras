@@ -100,6 +100,7 @@ public class RequestController {
 
     @PatchMapping("/approver/{id}")
     public ResponseEntity<Optional<RequestResponseDto>> approverRequest(@PathVariable Long id, @RequestHeader("Authorization") String authorizationHeader, @RequestBody SignatureRequestDto signatureRequestDto) {
+        System.out.println("Entrei na assinatura");
         User loggedUser = userService.getLoggedUser(authorizationHeader);
         Optional<RequestResponseDto> request = requestService.findById(id);
 

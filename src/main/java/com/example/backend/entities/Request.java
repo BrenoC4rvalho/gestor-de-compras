@@ -33,6 +33,7 @@ public class Request {
     private User requester;
 
     @Setter
+    @Column(name = "signature", columnDefinition = "LONGTEXT")
     private String signature;
 
     @Temporal(TemporalType.TIMESTAMP)
