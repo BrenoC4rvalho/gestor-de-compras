@@ -1,7 +1,7 @@
-# API para Gerenciamento de Permissões
+# API para Gerenciamento de Compras
 
 ## ✨ Sobre o Projeto
-Esta API foi desenvolvida para gerenciar permissões de trabalho. Ela fornece funcionalidades como criar, editar, excluir e listar permissões, com um sistema robusto de autenticação e autorização baseado em JWT.
+Esta API foi desenvolvida para gerenciar compras. Ela fornece funcionalidades como criar, editar, excluir e listar compras, com um sistema robusto de autenticação e autorização baseado em JWT.
 
 ## ⚖️ Tecnologias Utilizadas
 - **Java 17**
@@ -43,7 +43,7 @@ A API utiliza MySQL como banco de dados. Certifique-se de ter o MySQL instalado 
     INSERT INTO users (name, password) VALUES ('admin', '$2a$12$PY0bbH5OQJuiLepgsFqsQuqHmTBRxouwTMFeJs.LegUNEg2OQ7RBi');
     INSERT INTO roles (name) VALUES ('ROLE_ADMIN');
    ```
-   
+
 ### 2. Configurar o `application.properties`
 Atualize o arquivo `src/main/resources/application.properties` com as credenciais do seu banco de dados:
 
