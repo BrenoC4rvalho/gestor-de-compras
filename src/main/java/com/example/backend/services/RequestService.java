@@ -7,6 +7,8 @@ import com.example.backend.entities.Request;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -42,10 +44,8 @@ public class RequestService {
     }
 
     public List<RequestResponseDto> findAll() {
-        return requestRepository.findAll()
-                .stream()
-                .map(RequestResponseDto::fromEntity)
-                .toList();
+        List<Request> requests = requestRepository.findAll();
+        return requests.stream().map(RequestResponseDto::fromEntity).toList();
     }
 
     public RequestResponseDto update(Long id, CreateRequestDto createRequestDto) {

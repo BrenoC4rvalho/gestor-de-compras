@@ -1,5 +1,7 @@
 package com.example.backend.entities;
 
+import com.example.backend.enums.RoleName;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,4 +40,5 @@ public class User {
 
     @OneToMany(mappedBy = "approver")
     private List<Request> requestsApproved;
+
 }

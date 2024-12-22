@@ -8,6 +8,9 @@ import com.example.backend.entities.User;
 import com.example.backend.services.RequestService;
 import com.example.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,9 +82,9 @@ public class RequestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (request.get().signature() != null && !loggedUser.getRoles().contains("ROLE_ADMIN")) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        //if (request.get().signature() != null && !loggedUser.getRoles().contains("ROLE_ADMIN")) {
+            //return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        //}
 
         requestService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
